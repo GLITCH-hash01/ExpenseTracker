@@ -6,3 +6,8 @@ class ExpenseSerializer(serializers.ModelSerializer):
         model=expense
         fields=('expid','crnt_bal','difference','reason')
 
+class DailyExpenseSerializer(serializers.ModelSerializer):
+    class Meta:
+        model=expense
+        fields={'difference'}
+
