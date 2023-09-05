@@ -1,7 +1,7 @@
 from rest_framework.decorators import api_view
-from django.db.models import Max
+from django.db.models import Max,Sum
 from django.http import HttpResponse,JsonResponse
-from .serializers import ExpenseSerializer
+from .serializers import ExpenseSerializer,DailyExpenseSerializer
 from .models import expense
 from rest_framework.response import Response
 from rest_framework import status
@@ -58,5 +58,31 @@ def get_expense(request):
     serializer=ExpenseSerializer(expenses,many=True)
     return Response(serializer.data,status.HTTP_200_OK)  
    
+@api_view(['GET'])
+def total_expenses(request):
+    dd_query=request.query_params.get('dd')
+    mm_query=request.query_params.get('mm')
+    yy_query=request.query_params.get('yy')
+    try:
+        data={
+            "Totalexpense":expense.objects.filter(datetime__date=datetime.now().date()).aggregate(total=Sum('difference'))['total']
+            }
+    except expense.DoesNotExist:
+        Response(status=status.HTTP_404_NOT_FOUND)
+    
+    if dd_query and mm_query and yy_query:
+        search_date=datetime(int(yy_query),int(mm_query),int(dd_query))
+        try:
+            data={
+            "Totalexpense":expense.objects.filter(datetime__date=search_date).aggregate(total=Sum('difference'))['total']
+            }
+        except expense.DoesNotExist:
+            Response(status=status.HTTP_404_NOT_FOUND)
+    
+    serializer=DailyExpenseSerializer(data)
+    return Response(serializer.data,status.HTTP_200_OK)
+    
+
+
 
    
