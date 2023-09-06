@@ -63,6 +63,9 @@ def total_expenses(request):
     dd_query=request.query_params.get('dd')
     mm_query=request.query_params.get('mm')
     yy_query=request.query_params.get('yy')
+
+    start=request.query_params.get('start')
+    stop=request.query_params.get('stop')
     try:
         data={
             "Totalexpense":expense.objects.filter(datetime__date=datetime.now().date()).aggregate(total=Sum('difference'))['total']
@@ -78,7 +81,22 @@ def total_expenses(request):
             }
         except expense.DoesNotExist:
             Response(status=status.HTTP_404_NOT_FOUND)
-    
+    elif dd_query or mm_query or yy_query:
+        Response(status=status.HTTP_404_NOT_FOUND)
+        
+    if start and stop:
+        start_date=datetime.strptime(start,"%Y-%m-%d").date()
+        stop_date=datetime.strptime(stop,"%Y-%m-%d").date()
+        try:
+            data={
+            "Totalexpense":expense.objects.filter(datetime__date__range=(start_date,stop_date)).aggregate(total=Sum('difference'))['total']
+            }
+        except expense.DoesNotExist:
+            Response(status=status.HTTP_404_NOT_FOUND)
+    elif start or stop:
+        Response(status=status.HTTP_404_NOT_FOUND)
+
+
     serializer=DailyExpenseSerializer(data)
     return Response(serializer.data,status.HTTP_200_OK)
     
