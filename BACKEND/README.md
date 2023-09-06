@@ -33,7 +33,7 @@ Welcome to the documentation for the backend API of our expense tracking applica
 - **Method:** GET
 - **Description:** Get a list of all expenses with filtering options.
 - **Query Parameters:** This endpoint supports various query parameters for filtering the returned expense list:
-  - `date` (required): Specify the date in the format `dd`, `mm`, and `yy` (day, month, year).
+  - `dd`,`mm`,`yy` (required for filtering according to date): Specify the date in the format `dd`, `mm`, and `yy` (day, month, year).
   - `reason`: Filter expenses by category or a particular reason for the expense.
 - **Response:** Returns a list of records containing all information regarding the expenses that match the specified criteria.
 
@@ -49,4 +49,4 @@ Welcome to the documentation for the backend API of our expense tracking applica
 
 - Shifting to PostgreSQL: In the future, we plan to migrate our database to PostgreSQL for improved performance and scalability.
 
-If you have any questions or need further assistance, please don't hesitate to contact us. Thank you for using our expense tracking application!
+
